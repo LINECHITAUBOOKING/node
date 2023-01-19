@@ -37,16 +37,17 @@ app.use(csrfProtection)
 const authRouter = require('./routes/auth')
 // demo data
 const productsRouter = require('./routes/products')
-
 // app.use('/', indexRouter)
 // app.use('/users', usersRouter)
 
+const authRouters = require('./routes/authRouter')
 // use auth router(csrf, jwt, login, logout)
 app.use('/auth', authRouter)
 
 // demo data
 app.use('/products', productsRouter)
 
+app.use('/register', authRouters)
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404))
@@ -60,7 +61,7 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500)
-  res.status(500).send({ error: 'Error 500' })
+  res.status(500).send({ error: err })
 })
 
 module.exports = app
