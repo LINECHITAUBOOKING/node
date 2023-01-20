@@ -96,6 +96,13 @@ router.post('/login', (req, res) => {
     res.send('Username or password incorrect')
   }
 })
+router.post('/register', (req, res) => {
+  // read username and password from request body
+  const { username, password } = req.body
+  console.log(req.body.username)
+  console.log(username)
+  res.json('username, password')
+})
 
 router.get('/logout', authenticateJWT, (req, res) => {
   refreshTokens = refreshTokens.filter((t) => t !== req.cookies.accessToken)
