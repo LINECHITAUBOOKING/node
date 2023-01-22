@@ -40,14 +40,14 @@ const productsRouter = require('./routes/products')
 // app.use('/', indexRouter)
 // app.use('/users', usersRouter)
 
-const authRouters = require('./routes/authRouter')
+// const authRouters = require('./routes/authRouter')
 // use auth router(csrf, jwt, login, logout)
 app.use('/auth', authRouter)
 
 // demo data
 app.use('/products', productsRouter)
 
-app.use('/register', authRouters)
+// app.use('/register', authRouters)
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404))

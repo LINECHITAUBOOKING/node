@@ -1,5 +1,6 @@
-var express = require('express')
-var router = express.Router()
+const express = require('express')
+const router = express.Router()
+const pool = require('../utils/db')
 
 const jsonwebtoken = require('jsonwebtoken')
 const authenticateJWT = require('../middleware/jwt')
@@ -95,6 +96,16 @@ router.post('/login', (req, res) => {
   } else {
     res.send('Username or password incorrect')
   }
+})
+
+router.post('/register', async (req, res) => {
+  // read username and password from request body
+  const { email, username, password, confirmPassword } = req.body
+  let result = await pool.execute(
+    'INSERT INTO users (email, password, name) VALUES (?, ?, ?);',
+    [req.body.email, req.body.password, req.body.username]
+  )
+  res.json()
 })
 
 router.get('/logout', authenticateJWT, (req, res) => {

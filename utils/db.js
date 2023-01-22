@@ -1,5 +1,5 @@
-const mysql2 = require('mysql2/promise');
-require('dotenv').config();
+const mysql2 = require('mysql2/promise')
+require('dotenv').config()
 
 let pool = mysql2.createPool({
   host: process.env.DB_HOST,
@@ -9,6 +9,6 @@ let pool = mysql2.createPool({
   database: process.env.DB_NAME,
   // 限制 pool 連線數的上限
   connectionLimit: 10,
-});
+})
 
-module.exports = pool;
+module.exports = pool
