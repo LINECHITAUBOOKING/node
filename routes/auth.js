@@ -121,7 +121,6 @@ router.post('/register', async (req, res) => {
   if (members.length > 0) {
     // 表示這個 email 有存在資料庫中
     // 如果已經註冊過，就回覆 400
-
     return res.status(400).json({
       errors: [
         {
@@ -131,7 +130,6 @@ router.post('/register', async (req, res) => {
       ],
     })
   }
-
   let result = await pool.execute(
     'INSERT INTO users (email, password, name) VALUES (?, ?, ?);',
     [req.body.email, hashedPassword, req.body.username]
