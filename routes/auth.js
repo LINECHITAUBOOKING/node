@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const pool = require('../utils/db')
+const argon2 = require('argon2')
 
 const jsonwebtoken = require('jsonwebtoken')
 const authenticateJWT = require('../middleware/jwt')
@@ -101,9 +102,25 @@ router.post('/login', (req, res) => {
 router.post('/register', async (req, res) => {
   // read username and password from request body
   const { email, username, password, confirmPassword } = req.body
+  const hashedPassword = await argon2.hash(req.body.password)
+  let [members] = await pool.execute('SELECT * FROM users WHERE email = ?', [
+    req.body.email,
+  ])
+  if (members.length > 0) {
+    // 表示這個 email 有存在資料庫中
+    // 如果已經註冊過，就回覆 400
+    return res.status(400).json({
+      errors: [
+        {
+          msg: 'email 已經註冊過',
+          param: 'email',
+        },
+      ],
+    })
+  }
   let result = await pool.execute(
     'INSERT INTO users (email, password, name) VALUES (?, ?, ?);',
-    [req.body.email, req.body.password, req.body.username]
+    [req.body.email, hashedPassword, req.body.username]
   )
   res.json()
 })
