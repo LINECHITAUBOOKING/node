@@ -74,7 +74,7 @@ router.post('/login', async (req, res) => {
   console.log(user)
   let result = await argon2.verify(users.password, req.body.password)
   if (result === false) {
-    return res.status(401).json({ errors: ['密碼錯誤'] })
+    return res.status(403).json({ errors: ['密碼錯誤'] })
   }
   if (result) {
     // generate an access token
