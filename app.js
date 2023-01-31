@@ -47,6 +47,17 @@ app.use('/auth', authRouter)
 // demo data
 app.use('/products', productsRouter)
 
+const hotelList = require('./routes/hotelList/hotelList')
+app.use('/api/hotelList', hotelList)
+
+const hotel = require('./routes/hotel/popularSearch')
+app.use('/api/hotel', hotel)
+
+const hotelDetail = require('./routes/hotelDetail/hotelDetail')
+app.use('/api/hotelDetail', hotelDetail)
+const roomDetail = require('./routes/hotelDetail/roomDetail')
+app.use('/api/hotelDetail', roomDetail)
+
 // app.use('/register', authRouters)
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -63,5 +74,9 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500)
   res.status(500).send({ error: err })
 })
+
+// app.listen(3002, () => {
+//   console.log('Server running at port 3002')
+// })
 
 module.exports = app
