@@ -50,8 +50,10 @@ app.use('/products', productsRouter)
 const hotelList = require('./routes/hotelList/hotelList')
 app.use('/api/hotelList', hotelList)
 
-const hotel = require('./routes/hotel/popularSearch')
-app.use('/api/hotel', hotel)
+const popularSearch = require('./routes/hotel/popularSearch')
+app.use('/api/hotel', popularSearch)
+const recommandToC = require('./routes/hotel/recommandToC')
+app.use('/api/hotel', recommandToC)
 
 const hotelDetail = require('./routes/hotelDetail/hotelDetail')
 app.use('/api/hotelDetail', hotelDetail)
