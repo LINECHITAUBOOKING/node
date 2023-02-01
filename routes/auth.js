@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 const pool = require('../utils/db')
 const argon2 = require('argon2')
-
 const jsonwebtoken = require('jsonwebtoken')
 const authenticateJWT = require('../middleware/jwt')
 
@@ -56,16 +55,28 @@ router.get('/csrf-token', (req, res) => {
   res.json({ csrfToken: req.csrfToken() })
 })
 
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
   // read username and password from request body
   const { username, password } = req.body
-
+  console.log(username, password)
   // filter user from the users array by username and password
-  const user = users.find((u) => {
+  let [user] = await pool.execute('SELECT * FROM users WHERE name=? ', [
+    username,
+  ])
+  if (user.length === 0) {
+    return res.status(401).json({ errors: ['尚未註冊'] })
+  }
+  let users = user[0]
+  console.log(users)
+  /*  const user = member.find((u)   => {
     return u.username === username && u.password === password
-  })
-
-  if (user) {
+  }) */
+  console.log(user)
+  let result = await argon2.verify(users.password, req.body.password)
+  if (result === false) {
+    return res.status(403).json({ errors: ['密碼錯誤'] })
+  }
+  if (result) {
     // generate an access token
     const accessToken = jsonwebtoken.sign(
       { id: user.id, username: user.username, role: user.role },
@@ -83,6 +94,7 @@ router.post('/login', (req, res) => {
     refreshTokens.push(refreshToken)
 
     // now in react state !
+
     //res.cookie('accessToken', accessToken, { httpOnly: true })
 
     // refresh token is in browser cookie
