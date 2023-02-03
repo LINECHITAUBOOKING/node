@@ -9,7 +9,9 @@ router.get('/list/:email', async (req, res, next) => {
     'SELECT users.email,total_order_list.* FROM users INNER JOIN total_order_list ON users.email=total_order_list.user_email WHERE total_order_list.user_email = ?',
     [req.params.email]
   )
-
+  if (results.length === 0) {
+    return res.status(400).json({ error: '找不到訂單' })
+  }
   res.json(results)
 })
 
