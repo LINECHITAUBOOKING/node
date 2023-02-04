@@ -53,13 +53,19 @@ app.use('/products', productsRouter)
 const hotelList = require('./routes/hotelList/hotelList')
 app.use('/api/hotelList', hotelList)
 
-const hotel = require('./routes/hotel/popularSearch')
-app.use('/api/hotel', hotel)
+const popularSearch = require('./routes/hotel/popularSearch')
+app.use('/api/hotel', popularSearch)
+const recommandToC = require('./routes/hotel/recommandToC')
+app.use('/api/hotel', recommandToC)
 
 const hotelDetail = require('./routes/hotelDetail/hotelDetail')
 app.use('/api/hotelDetail', hotelDetail)
 const roomDetail = require('./routes/hotelDetail/roomDetail')
 app.use('/api/hotelDetail', roomDetail)
+
+const userlist = require('./routes/user/list')
+app.use('/api/userlist', userlist)
+
 
 // app.use('/register', authRouters)
 // catch 404 and forward to error handler
@@ -72,7 +78,6 @@ app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message
   res.locals.error = req.app.get('env') === 'development' ? err : {}
-
   // render the error page
   res.status(err.status || 500)
   res.status(500).send({ error: err })

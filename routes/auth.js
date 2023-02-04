@@ -12,6 +12,7 @@ const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
 const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET
 
 // users demo data
+
 const users = [
   { id: 1, username: 'pony', password: '11111', role: 'admin' },
   { id: 2, username: 'harry', password: '12345', role: 'user' },
@@ -55,19 +56,55 @@ router.get('/csrf-token', (req, res) => {
   res.json({ csrfToken: req.csrfToken() })
 })
 
+router.post('/google', async (req, res) => {
+  const { username, email } = req.body
+  console.log(username, email)
+
+  if (username) {
+    // generate an access token
+    const accessToken = jsonwebtoken.sign(
+      { id: username.id, username: username.username, role: username.role },
+      accessTokenSecret,
+      { expiresIn: '60m' }
+    )
+
+    // generate an refreshToken token
+    const refreshToken = jsonwebtoken.sign(
+      { id: username.id, username: username.username, role: username.role },
+      refreshTokenSecret,
+      { expiresIn: '60d' }
+    )
+
+    refreshTokens.push(refreshToken)
+
+    // now in react state !
+    //res.cookie('accessToken', accessToken, { httpOnly: true })
+
+    // refresh token is in browser cookie
+    res.cookie('refreshToken', refreshToken, { httpOnly: true })
+
+    // only need to pass access token to react state
+    // refresh token is in browser cookie
+    res.json({
+      accessToken,
+      // refreshToken,
+    })
+  } else {
+    res.send('Username or password incorrect')
+  }
+})
 router.post('/login', async (req, res) => {
   // read username and password from request body
-  const { username, password } = req.body
-  console.log(username, password)
+  const { email, password } = req.body
+  console.log(email, password)
   // filter user from the users array by username and password
-  let [user] = await pool.execute('SELECT * FROM users WHERE name=? ', [
-    username,
-  ])
+  let [user] = await pool.execute('SELECT * FROM users WHERE email=? ', [email])
   if (user.length === 0) {
     return res.status(401).json({ errors: ['尚未註冊'] })
   }
   let users = user[0]
   console.log(users)
+
   /*  const user = member.find((u)   => {
     return u.username === username && u.password === password
   }) */
