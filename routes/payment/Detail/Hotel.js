@@ -32,13 +32,14 @@ router.get('/:user', async (req, res, next) => {
 router.post('/order', async (req, res) => {
   console.log('POST /api/order', req.body)
   // req.body.stockId, req.body.stockName
+  
 
-  // let [results] = await pool.query(
-  //   'INSERT INTO `total_order_list` (`id`, `user_email`, `order_date`, `total_price`, `total_amount`, `state`, `valid`) VALUES (?, ?, ?, ?, ?, ?, ?)',
-  //   [null, req.body.email, req.body.date, req.body.price, req.body.amount, 0, 1]
-  // )
+  let [results] = await pool.query(
+    'INSERT INTO `total_order_list` (`id`, `user_email`, `order_date`, `total_price`, `total_amount`, `state`, `valid`) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    [null, req.body.email, req.body.date, req.body.price, req.body.amount, 0, 1]
+  )
 
-  // // console.log(results);
+  // console.log(results);
   res.json({})
 })
 module.exports = router
