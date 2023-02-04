@@ -44,8 +44,8 @@ const productsRouter = require('./routes/products')
 // use auth router(csrf, jwt, login, logout)
 app.use('/auth', authRouter)
 
-const paymentHotelDetail = require('./routes/payment/paymentDetail/Hotel')
-app.use('/api/paymentHotelDetail', paymentHotelDetail)
+const paymentHotelDetail = require('./routes/payment/Detail/Hotel')
+app.use('/api/payment/Detail/Hotel', paymentHotelDetail)
 
 // demo data
 app.use('/products', productsRouter)
