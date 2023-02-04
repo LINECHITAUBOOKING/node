@@ -184,6 +184,7 @@ router.post('/register', async (req, res) => {
       ],
     })
   }
+  
   let result = await pool.execute(
     'INSERT INTO users (account, password, email, created) VALUES (?, ?, ?, ?);',
     [req.body.username, hashedPassword, req.body.email, date]
