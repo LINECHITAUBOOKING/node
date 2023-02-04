@@ -62,7 +62,8 @@ app.use('/api/hotelDetail', roomDetail)
 
 const userlist = require('./routes/user/list')
 app.use('/api/userlist', userlist)
-
+const coupon = require('./routes/coupon/coupon')
+app.use('/api/coupon', coupon)
 
 // app.use('/register', authRouters)
 // catch 404 and forward to error handler
