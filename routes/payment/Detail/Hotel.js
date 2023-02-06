@@ -8,7 +8,7 @@ router.get('/:companyName/:roomName', async (req, res, next) => {
     'SELECT  hotel_room_list.id AS hotel_room_list_id,hotel_room_list.*, room_service_list.*,room_service_list.id AS room_service_id,hotel_account.company_name,hotel_account.address FROM hotel_room_list INNER JOIN room_service_list ON hotel_room_list.room_name=room_service_list.room JOIN hotel_account ON hotel_account.company_name=hotel_room_list.hotel_name WHERE hotel_room_list.hotel_name=? AND room_service_list.hotel=? AND hotel_room_list.room_name=?',
     [req.params.companyName, req.params.companyName, req.params.roomName]
   )
-  // NOTE  JOIN了 訂單房型飯店 ，要想怎麼傳值到CHeckOut
+  // NOTE  JOIN了 訂單房型飯店 ，要想怎麼傳值到CheckOut
   //  SELECT order_list_detail.*, total_order_list.*,hotel_room_list.*, room_service_list.*,hotel_account.company_name,hotel_account.address FROM total_order_list INNER JOIN order_list_detail ON total_order_list.id=order_list_detail.order_id JOIN hotel_room_list ON order_list_detail.product_id=hotel_room_list.id JOIN room_service_list ON room_service_list.id=hotel_room_list.id JOIN hotel_account ON hotel_room_list.hotel_name=hotel_account.company_name WHERE  total_order_list.user_email='lpy102817@gmail.com' AND hotel_room_list.id='4' AND total_order_list.order_date='2023-02-05 16:25:19';';
   console.log('companyName', req.params.companyName)
   console.log('roomName', req.params.companyName)
@@ -34,7 +34,7 @@ router.post('/order', async (req, res) => {
   console.log('POST /api/order', req.body)
   // req.body.stockId, req.body.stockName
   const memo = '無'
-  const order_id = 'NH' + Date.now()
+  const order_id = 'NH' + req.body.orderID
   const description = JSON.stringify([
     { booker: req.body.formData, memo: memo },
   ])
@@ -43,7 +43,7 @@ router.post('/order', async (req, res) => {
     'INSERT INTO `total_order_list` (`id`, `user_email`, `order_date`, `total_price`, `total_amount`, `state`, `valid`) VALUES (?, ?, ?, ?, ?, ?, ?)',
     [
       order_id,
-      req.body.user_email,
+      req.body.userEmail,
       req.body.orderDate,
       req.body.totalPrice,
       req.body.amount,
@@ -56,7 +56,7 @@ router.post('/order', async (req, res) => {
     [
       null,
       order_id,
-      req.body.product_id,
+      req.body.productId,
       req.body.price,
       req.body.amount,
       req.body.startDate,
