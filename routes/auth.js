@@ -12,6 +12,7 @@ const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
 const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET
 
 // users demo data
+
 const users = [
   { id: 1, username: 'pony', password: '11111', role: 'admin' },
   { id: 2, username: 'harry', password: '12345', role: 'user' },
@@ -55,19 +56,70 @@ router.get('/csrf-token', (req, res) => {
   res.json({ csrfToken: req.csrfToken() })
 })
 
+router.post('/google', async (req, res) => {
+  const { username, email } = req.body
+  console.log(username, email)
+  let [members] = await pool.execute('SELECT * FROM users WHERE email = ?', [
+    req.body.email,
+  ])
+  if (members.length == 0) {
+    // 表示這個 email 有存在資料庫中
+    // 如果已經註冊過，就回覆 400
+    let result = await pool.execute(
+      'INSERT INTO users (email, name) VALUES (?, ?);',
+      [req.body.email, req.body.username]
+    )
+  }
+  /*  let result = await pool.execute(
+    'INSERT INTO users (email, name) VALUES (?, ?);',
+    [req.body.email, req.body.username]
+  ) */
+
+  if (username) {
+    // generate an access token
+    const accessToken = jsonwebtoken.sign(
+      { id: username.id, username: username.username, role: username.role },
+      accessTokenSecret,
+      { expiresIn: '60m' }
+    )
+
+    // generate an refreshToken token
+    const refreshToken = jsonwebtoken.sign(
+      { id: username.id, username: username.username, role: username.role },
+      refreshTokenSecret,
+      { expiresIn: '60d' }
+    )
+
+    refreshTokens.push(refreshToken)
+
+    // now in react state !
+    //res.cookie('accessToken', accessToken, { httpOnly: true })
+
+    // refresh token is in browser cookie
+    res.cookie('refreshToken', refreshToken, { httpOnly: true })
+
+    // only need to pass access token to react state
+    // refresh token is in browser cookie
+    res.json({
+      accessToken,
+      // refreshToken,
+    })
+  } else {
+    res.send('Username or password incorrect')
+  }
+})
 router.post('/login', async (req, res) => {
   // read username and password from request body
-  const { username, password } = req.body
-  console.log(username, password)
+  const { email, password } = req.body
+  console.log('=============================', email, password)
   // filter user from the users array by username and password
-  let [user] = await pool.execute('SELECT * FROM users WHERE name=? ', [
-    username,
-  ])
+  let [user] = await pool.execute('SELECT * FROM users WHERE email=? ', [email])
   if (user.length === 0) {
     return res.status(401).json({ errors: ['尚未註冊'] })
   }
   let users = user[0]
   console.log(users)
+
   /*  const user = member.find((u)   => {
     return u.username === username && u.password === password
   }) */
@@ -113,8 +165,10 @@ router.post('/login', async (req, res) => {
 
 router.post('/register', async (req, res) => {
   // read username and password from request body
-  const { email, username, password, confirmPassword } = req.body
+  const { email, account, password, confirmPassword } = req.body
   const hashedPassword = await argon2.hash(req.body.password)
+  const date = new Date()
+  console.log(date)
   let [members] = await pool.execute('SELECT * FROM users WHERE email = ?', [
     req.body.email,
   ])
@@ -131,8 +185,61 @@ router.post('/register', async (req, res) => {
     })
   }
   let result = await pool.execute(
-    'INSERT INTO users (email, password, name) VALUES (?, ?, ?);',
-    [req.body.email, hashedPassword, req.body.username]
+    'INSERT INTO users (account, password, email, created) VALUES (?, ?, ?, ?);',
+    [req.body.username, hashedPassword, req.body.email, date]
+  )
+  res.json()
+})
+
+router.post('/pay', async (req, res) => {
+  // read username and password from request body
+  const { name, number, date, cvc, email } = req.body
+  console.log(req.body)
+
+  let result = await pool.execute(
+    'INSERT INTO credit_card (email, cardholder_name, card_number, exp_date	, cvc) VALUES (?, ?, ?, ?, ?);',
+    [
+      req.body.email,
+      req.body.name,
+      req.body.number,
+      req.body.date,
+      req.body.cvc,
+    ]
+  )
+
+  res.json()
+})
+
+router.post('/setting', async (req, res) => {
+  // read username and password from request body
+  const { name, city, country, nickname, birthday, phone, email } = req.body
+  console.log(req.body)
+
+  let result = await pool.execute(
+    'UPDATE users SET name = ?, city = ?, country = ?, nickname = ?, birthday = ?, phone = ? WHERE email = ?;',
+    [
+      req.body.name,
+      req.body.city,
+      req.body.country,
+      req.body.nickname,
+      req.body.birthday,
+      req.body.phone,
+      req.body.email,
+    ]
+  )
+
+  res.json()
+})
+
+router.post('/setting-password', async (req, res) => {
+  // read username and password from request body
+  const { password, newpassord } = req.body
+  console.log(req.body)
+  const hashedPassword = await argon2.hash(req.body.newpassword)
+  console.log(hashedPassword)
+  let result = await pool.execute(
+    'UPDATE users SET password = ? WHERE email = ?;',
+    [hashedPassword, req.body.email]
   )
   res.json()
 })
