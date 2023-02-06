@@ -52,11 +52,12 @@ router.post('/order', async (req, res) => {
     ]
   )
   let [details] = await pool.query(
-    'INSERT INTO `order_list_detail` (`id`, `order_id`, `product_id`, `price`, `amount`, `start_date`, `end_date`, `description`, `discount`, `vaild`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);',
+    'INSERT INTO `order_list_detail` (`id`, `order_id`, `product_id`, `company_name`, `price`, `amount`, `start_date`, `end_date`, `description`, `discount`, `vaild`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);',
     [
       null,
       order_id,
       req.body.productId,
+      req.body.companyName,
       req.body.price,
       req.body.amount,
       req.body.startDate,

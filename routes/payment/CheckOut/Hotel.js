@@ -17,6 +17,19 @@ router.get('/:userEmail/:ordeDate', async (req, res, next) => {
   //   )
   res.json(results)
 })
+router.get('/:orderId', async (req, res, next) => {
+  let [results] = await pool.execute(
+    'SELECT order_list_detail.*, total_order_list.*,hotel_room_list.*, room_service_list.*,hotel_account.company_name,hotel_account.address FROM total_order_list INNER JOIN order_list_detail ON total_order_list.id=order_list_detail.order_id JOIN hotel_room_list ON order_list_detail.product_id=hotel_room_list.id JOIN room_service_list ON room_service_list.id=hotel_room_list.id JOIN hotel_account ON hotel_room_list.hotel_name=hotel_account.company_name WHERE  total_order_list.id=?;',
+    [req.params.orderId]
+  )
+  //   SELECT hotel_room_list.*, room_service_list.*,hotel_account.* FROM hotel_room_list INNER JOIN room_service_list ON hotel_room_list.room_name=room_service_list.room JOIN hotel_account ON hotel_account.company_name=hotel_room_list.hotel_name WHERE hotel_room_list.hotel_name='台北宏都金殿飯店' AND room_service_list.hotel='台北宏都金殿飯店' AND hotel_room_list.room_name='高級套房';
+  console.log('orderId', req.params.orderId)
+  //   let [results2] = await pool.execute(
+  //     'SELECT * FROM hotel_service_list WHERE hotel_service_list.hotel=?',
+  //     [req.params.companyName]
+  //   )
+  res.json(results)
+})
 // router.get('/:user', async (req, res, next) => {
 //   let [results] = await pool.execute(
 //     'SELECT user_credit_card.*, users.* FROM user_credit_card INNER JOIN users ON user_credit_card.user_email=users.email  WHERE user_credit_card.user_email=? ',
