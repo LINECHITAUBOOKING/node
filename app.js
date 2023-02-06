@@ -60,9 +60,11 @@ app.use('/api/hotelDetail', hotelDetail)
 const roomDetail = require('./routes/hotelDetail/roomDetail')
 app.use('/api/hotelDetail', roomDetail)
 
+const aroundSpots = require('./routes/aroundSpots')
+app.use('/api/aroundSpots', csrfProtection, aroundSpots)
+
 const userlist = require('./routes/user/list')
 app.use('/api/userlist', userlist)
-
 
 // app.use('/register', authRouters)
 // catch 404 and forward to error handler
