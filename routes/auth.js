@@ -111,7 +111,7 @@ router.post('/google', async (req, res) => {
 router.post('/login', async (req, res) => {
   // read username and password from request body
   const { email, password } = req.body
-  console.log('=============================', email, password)
+  console.log(email, password)
   // filter user from the users array by username and password
   let [user] = await pool.execute('SELECT * FROM users WHERE email=? ', [email])
   if (user.length === 0) {
@@ -184,6 +184,7 @@ router.post('/register', async (req, res) => {
       ],
     })
   }
+
   let result = await pool.execute(
     'INSERT INTO users (account, password, email, created) VALUES (?, ?, ?, ?);',
     [req.body.username, hashedPassword, req.body.email, date]
