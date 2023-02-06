@@ -34,7 +34,7 @@ router.post('/order', async (req, res) => {
   console.log('POST /api/order', req.body)
   // req.body.stockId, req.body.stockName
   const memo = '無'
-  const order_id = 'NH' + req.body.orderID
+  const order_id = 'NH' + req.body.orderIdNum
   const description = JSON.stringify([
     { booker: req.body.formData, memo: memo },
   ])
