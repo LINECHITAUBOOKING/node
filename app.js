@@ -59,6 +59,8 @@ const hotelDetail = require('./routes/hotelDetail/hotelDetail')
 app.use('/api/hotelDetail', hotelDetail)
 const roomDetail = require('./routes/hotelDetail/roomDetail')
 app.use('/api/hotelDetail', roomDetail)
+const hotelOrder = require('./routes/hotelDetail/hotelOrder')
+app.use('/api/hotelDetail', hotelOrder)
 
 const aroundSpots = require('./routes/aroundSpots')
 app.use('/api/aroundSpots', csrfProtection, aroundSpots)
