@@ -40,7 +40,7 @@ router.get('/jwt-token', (req, res) => {
     }
 
     const accessToken = jsonwebtoken.sign(
-      { id: user.id, username: user.username, role: user.role },
+      { email: user.email, username: user.username, role: user.role },
       accessTokenSecret,
       { expiresIn: '60m' }
     )
@@ -131,14 +131,14 @@ router.post('/login', async (req, res) => {
   if (result) {
     // generate an access token
     const accessToken = jsonwebtoken.sign(
-      { id: user.id, username: user.username, role: user.role },
+      { email: email, username: user.username, role: user.role },
       accessTokenSecret,
       { expiresIn: '60m' }
     )
 
     // generate an refreshToken token
     const refreshToken = jsonwebtoken.sign(
-      { id: user.id, username: user.username, role: user.role },
+      { email: email, username: user.username, role: user.role },
       refreshTokenSecret,
       { expiresIn: '60d' }
     )
@@ -198,7 +198,7 @@ router.post('/pay', async (req, res) => {
   console.log(req.body)
 
   let result = await pool.execute(
-    'INSERT INTO credit_card (email, cardholder_name, card_number, exp_date	, cvc) VALUES (?, ?, ?, ?, ?);',
+    'INSERT INTO credit_card (user_email, cardholder_name, card_number, exp_date	, cvc) VALUES (?, ?, ?, ?, ?);',
     [
       req.body.email,
       req.body.name,
