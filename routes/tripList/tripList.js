@@ -3,16 +3,15 @@ const router = express.Router()
 const pool = require('../../utils/db')
 
 router.get('/:URLkeyword', async (req, res) => {
-  let keyword = req.params.URLkeyword //r=台北n=客家&風箏 //r=none?n=none
+  let keyword = req.params.URLkeyword //r=台北n=客家&風箏 //r=nonen=none //x=台北x=客家&風箏
   console.log(keyword)
 
-  const keywordArr = keyword.split('=') //[r,台北?n,客家&風箏] //[r,none,none]
+  const keywordArr = keyword.split('x=') //[r,台北?n,客家&風箏] //[r,none,none] //[台北,客家&風箏]
   console.log(keywordArr)
 
-  const regionKeyword =
-    keywordArr[1].slice(0, 2) !== 'no' ? keywordArr[1].slice(0, 2) : ''
+  const regionKeyword = keywordArr[0].slice(0, 2) !== 'no' ? keywordArr[0] : ''
 
-  const rawNameKeyword = keywordArr[2].split('&') // [客家,風箏] //[none]
+  const rawNameKeyword = keywordArr[1].split('&') // [客家,風箏] //[none]
 
   let emptyNameKeywordArr = []
 
