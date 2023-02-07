@@ -65,11 +65,18 @@ app.use('/api/userlist', userlist)
 const coupon = require('./routes/coupon/coupon')
 app.use('/api/coupon', coupon)
 
+//! 俊傑的產品一覽&詳細頁面&資料上傳頁面
 const tripList = require('./routes/tripList/tripList')
 app.use('/api/tripList', tripList)
 
 const tripDetail = require('./routes/tripDetail/tripDetail')
 app.use('/api/tripDetail', tripDetail)
+
+const uploadTrip = require('./routes/uploadTrip/uploadTrip')
+app.use('/api/uploadTrip', uploadTrip)
+
+const uploadPlan = require('./routes/uploadTrip/uploadPlan')
+app.use('/api/uploadTrip', uploadPlan)
 
 // app.use('/register', authRouters)
 // catch 404 and forward to error handler
