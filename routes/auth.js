@@ -184,7 +184,7 @@ router.post('/register', async (req, res) => {
       ],
     })
   }
-  
+
   let result = await pool.execute(
     'INSERT INTO users (account, password, email, created) VALUES (?, ?, ?, ?);',
     [req.body.username, hashedPassword, req.body.email, date]
@@ -243,6 +243,16 @@ router.post('/setting-password', async (req, res) => {
     [hashedPassword, req.body.email]
   )
   res.json()
+})
+
+router.post('/setUserLikeValid', async (req, res, next) => {
+  const { email, hotel, valid } = req.body
+  console.log(req.body)
+  let result = await pool.execute(
+    'UPDATE hotel_user_like SET valid =? WHERE company_name=? AND user_email=?',
+    [valid, email, hotel]
+  )
+  res.json(result)
 })
 
 router.get('/logout', authenticateJWT, (req, res) => {
