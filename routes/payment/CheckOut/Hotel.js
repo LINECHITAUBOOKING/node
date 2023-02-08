@@ -44,44 +44,16 @@ router.get('/:orderId', async (req, res, next) => {
 //   //   )
 //   res.json(results)
 // })
-// router.post('/order', async (req, res) => {
-//   console.log('POST /api/order', req.body)
-//   // req.body.stockId, req.body.stockName
-//   const memo = '無'
-//   const order_id = 'NH' + Date.now()
-//   const description = JSON.stringify([
-//     { booker: req.body.formData, memo: memo },
-//   ])
-//   console.log('======description======', description)
-//   let [results] = await pool.query(
-//     'INSERT INTO `total_order_list` (`id`, `user_email`, `order_date`, `total_price`, `total_amount`, `state`, `valid`) VALUES (?, ?, ?, ?, ?, ?, ?)',
-//     [
-//       order_id,
-//       req.body.user_email,
-//       req.body.orderDate,
-//       req.body.totalPrice,
-//       req.body.amount,
-//       0,
-//       1,
-//     ]
-//   )
-//   let [details] = await pool.query(
-//     'INSERT INTO `order_list_detail` (`id`, `order_id`, `product_id`, `price`, `amount`, `start_date`, `end_date`, `description`, `discount`, `vaild`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);',
-//     [
-//       null,
-//       order_id,
-//       req.body.product_id,
-//       req.body.price,
-//       req.body.amount,
-//       req.body.startDate,
-//       req.body.endDate,
-//       description,
-//       req.body.discount,
-//       1,
-//     ]
-//   )
-//   //   INSERT INTO `order_list_detail` (`id`, `order_id`, `product_id`, `price`, `amount`, `start_date`, `end_date`, `description`, `discount`, `vaild`) VALUES (NULL, 'H1675571798103', '3', '1000', '10', '2023-02-01', '2023-02-02', '{booker: {lastName: \'張\',firstName: \'三明\',email: \'Chung1125@wanggg.com\',tel: \'0913255468\',country: \'台灣\',lang: \'中文\',},memo:\'房間不要有頭髮\'}', '20', '1');
-//   // console.log(results);
-//   res.json({})
-// })
+router.post('/order/CheckOut', async (req, res) => {
+  console.log('POST /api/order', req.body)
+  // req.body.stockId, req.body.stockName
+
+  let [details] = await pool.query(
+    'UPDATE `total_order_list` SET `state` = ? WHERE `total_order_list`.`id` = ?;',
+    [1, req.body.orderId]
+  )
+  //   INSERT INTO `order_list_detail` (`id`, `order_id`, `product_id`, `price`, `amount`, `start_date`, `end_date`, `description`, `discount`, `vaild`) VALUES (NULL, 'H1675571798103', '3', '1000', '10', '2023-02-01', '2023-02-02', '{booker: {lastName: \'張\',firstName: \'三明\',email: \'Chung1125@wanggg.com\',tel: \'0913255468\',country: \'台灣\',lang: \'中文\',},memo:\'房間不要有頭髮\'}', '20', '1');
+  // console.log(results);
+  res.json({})
+})
 module.exports = router
