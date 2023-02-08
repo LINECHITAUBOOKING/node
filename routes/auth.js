@@ -261,4 +261,9 @@ router.get('/check-login', authenticateJWT, (req, res) => {
   res.json({ message: 'login' })
 })
 
+router.post('/api/uploadTrip/:test', async (req, res) => {
+  console.log('POST auth/api/uploadTrip/test', req.body)
+  res.json(req.body)
+})
+
 module.exports = router

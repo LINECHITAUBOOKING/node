@@ -3,15 +3,17 @@ const router = express.Router()
 const pool = require('../../utils/db')
 
 router.get('/:URLkeyword', async (req, res) => {
-  let keyword = req.params.URLkeyword //r=台北n=客家&風箏 //r=nonen=none //x=台北x=客家&風箏
-  console.log(keyword)
+  let keyword = req.params.URLkeyword //r=台北+n=客家&風箏 //r=none&n=none
+  // console.log(keyword)
 
-  const keywordArr = keyword.split('x=') //[r,台北?n,客家&風箏] //[r,none,none] //[台北,客家&風箏]
-  console.log(keywordArr)
+  const keywordArr = keyword.split('+') //[r=台北,n=客家&風箏] //[r=none,n=none]
+  // console.log(keywordArr)
 
-  const regionKeyword = keywordArr[0].slice(0, 2) !== 'no' ? keywordArr[0] : ''
+  const regionKeyword = keywordArr[0].slice(2)
+  // console.log('地名 keyword:', regionKeyword)
 
-  const rawNameKeyword = keywordArr[1].split('&') // [客家,風箏] //[none]
+  const rawNameKeyword = keywordArr[1].slice(2).split('&') // [客家,風箏] //[none]
+  // console.log('關鍵字keyword:', rawNameKeyword)
 
   let emptyNameKeywordArr = []
 
@@ -64,7 +66,7 @@ router.get('/:URLkeyword', async (req, res) => {
     let [results] = await pool.execute(regionOnlySql, [regionKeyword])
     res.json(results)
   } else {
-    res.json([{ 不同意的請舉手: '沒有' }])
+    res.json([{ 出現預料條件之外的錯誤: '哭阿' }])
   }
 })
 

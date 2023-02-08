@@ -76,7 +76,7 @@ const uploadTrip = require('./routes/uploadTrip/uploadTrip')
 app.use('/api/uploadTrip', uploadTrip)
 
 const uploadPlan = require('./routes/uploadTrip/uploadPlan')
-app.use('/api/uploadTrip', uploadPlan)
+app.use('/api/uploadPlan', uploadPlan)
 
 // app.use('/register', authRouters)
 // catch 404 and forward to error handler
