@@ -10,4 +10,5 @@ router.get('/userLike/:userEmail', async (req, res, next) => {
   )
   res.json(results)
 })
+
 module.exports = router
