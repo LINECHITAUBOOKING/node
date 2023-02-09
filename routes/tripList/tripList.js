@@ -37,6 +37,7 @@ router.get('/:URLkeyword', async (req, res) => {
     return emptyParamArr
   }
 
+  // SELECT TRIP.trip_id,TRIP.trip_name,PLAN.price_adu,TRIP.introduction,TRIP.intro_pic,TRIP.pic_intro,TRIP.all_pic,TRIP.comment_grade,TRIP.comment_amount,LIST.culture_history,LIST.amusement,LIST.meal,LIST.no_shopping,LIST.self_trip,LIST.guide_trip,LIST.mountain,LIST.in_water,LIST.snow  FROM `trip_event` AS TRIP JOIN `trip_service_list` AS LIST ON TRIP.trip_id = LIST.trip_id JOIN `trip_plan` AS PLAN ON TRIP.trip_id = PLAN.master WHERE region = "台北" AND (trip_name LIKE "%陽明山%")
   const preparedParamsArr = countParams()
   const preparedParams = preparedParamsArr.toString().replaceAll(',', ' ')
 
@@ -44,8 +45,6 @@ router.get('/:URLkeyword', async (req, res) => {
   console.log('preparedParams', preparedParams)
   console.log('regionKeyword', regionKeyword)
   console.log('ReadyNameKeyword', ReadyNameKeyword)
-
-  // SELECT TRIP.trip_id,TRIP.trip_name,PLAN.price_adu,TRIP.introduction,TRIP.intro_pic,TRIP.pic_intro,TRIP.all_pic,TRIP.comment_grade,TRIP.comment_amount,LIST.culture_history,LIST.amusement,LIST.meal,LIST.no_shopping,LIST.self_trip,LIST.guide_trip,LIST.mountain,LIST.in_water,LIST.snow FROM `trip_event` AS TRIP JOIN `trip_service_list` AS LIST ON TRIP.trip_id = LIST.trip_id JOIN `trip_plan` AS PLAN ON TRIP.trip_id = PLAN.master WHERE region = "台北" AND (trip_name LIKE "%陽明山%")
 
   const normalSql = `SELECT * FROM trip_event  WHERE region = ? AND (trip_name LIKE ${preparedParams})`
 
