@@ -351,7 +351,7 @@ router.post('/setting', async (req, res) => {
       req.body.name,
       req.body.city,
       req.body.country,
-      req.body.nickname,
+      req.body.identification,
       req.body.birthday,
       req.body.phone,
       req.body.gender,
