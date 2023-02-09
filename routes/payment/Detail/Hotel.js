@@ -60,7 +60,7 @@ router.post('/order', async (req, res, next) => {
   // console.log(results);
   res.json({})
 })
-router.use('/user/:userEmail', async (req, res, next) => {
+router.use('/userCoupons/:userEmail', async (req, res, next) => {
   console.log('=====', req.params.userEmail)
   const now = moment(Date.now()).format('YYYY-MM-DD')
   // const now = '2023-03-21'

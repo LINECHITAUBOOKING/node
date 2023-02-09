@@ -5,10 +5,9 @@ const pool = require('../../../utils/db')
 
 router.get('/creditCard/:user', async (req, res, next) => {
   let [creditcard] = await pool.query(
-    'SELECT user_credit_card.*, users.email FROM user_credit_card INNER JOIN users ON user_credit_card.user_email=users.email  WHERE user_credit_card.user_email=? ',
+    'SELECT credit_card.*, users.email FROM credit_card INNER JOIN users ON credit_card.user_email=users.email  WHERE credit_card.user_email=? ',
     [req.params.user]
   )
-
   res.json(creditcard)
 })
 // router.get('/:userEmail/:ordeDate', async (req, res, next) => {
@@ -34,7 +33,7 @@ router.get('/:orderId', async (req, res, next) => {
 
 // router.get('/:user', async (req, res, next) => {
 //   let [results] = await pool.execute(
-//     'SELECT user_credit_card.*, users.* FROM user_credit_card INNER JOIN users ON user_credit_card.user_email=users.email  WHERE user_credit_card.user_email=? ',
+//     'SELECT credit_card.*, users.* FROM credit_card INNER JOIN users ON credit_card.user_email=users.email  WHERE credit_card.user_email=? ',
 //     [req.params.user]
 //   )
 //   //   SELECT hotel_room_list.*, room_service_list.*,hotel_account.* FROM hotel_room_list INNER JOIN room_service_list ON hotel_room_list.room_name=room_service_list.room JOIN hotel_account ON hotel_account.company_name=hotel_room_list.hotel_name WHERE hotel_room_list.hotel_name='台北宏都金殿飯店' AND room_service_list.hotel='台北宏都金殿飯店' AND hotel_room_list.room_name='高級套房';
