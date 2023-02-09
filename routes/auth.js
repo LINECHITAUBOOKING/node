@@ -204,6 +204,7 @@ router.post('/register', async (req, res) => {
       ],
     })
   }
+
   const hash = (Math.random() + 1).toString(36).substring(7)
 
   const mailOptions = {
@@ -333,7 +334,7 @@ router.post('/setting', async (req, res) => {
     ]
   )
 
-  res.json()
+  res.json('setting')
 })
 
 router.post('/setting-password', async (req, res) => {
@@ -348,7 +349,26 @@ router.post('/setting-password', async (req, res) => {
   )
   res.json()
 })
-
+router.post('/setUserLikeValid', async (req, res, next) => {
+  const { email, hotel, valid } = req.body
+  console.log(email, hotel, valid)
+  let result = await pool.execute(
+    'UPDATE hotel_user_like SET valid = ? WHERE company_name= ? AND user_email= ?',
+    [valid, hotel, email]
+  )
+  console.log(result)
+  res.json(result)
+})
+router.post('/setNewUserLike', async (req, res, next) => {
+  const { email, hotel, valid } = req.body
+  console.log(email, hotel, valid)
+  let result = await pool.execute(
+    'INSERT INTO hotel_user_like (user_email, company_name,valid) VALUES (?, ?, ?)',
+    [email, hotel, valid]
+  )
+  console.log(result)
+  res.json(result)
+})
 router.get('/logout', authenticateJWT, (req, res) => {
   refreshTokens = refreshTokens.filter((t) => t !== req.cookies.accessToken)
 
