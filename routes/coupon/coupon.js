@@ -10,7 +10,7 @@ router.get('/coupon/:email/:code', async (req, res, next) => {
   let [coupon] = await pool.execute('SELECT * FROM coupon WHERE code = ?', [
     req.params.code,
   ])
-
+  console.log('123', coupon)
   if (coupon.length === 0) {
     return res.status(400).json({
       errors: [
@@ -41,7 +41,7 @@ router.get('/coupon/:email/:code', async (req, res, next) => {
       coupon[0].valid,
     ]
   )
-
+  console.log('coupon', result)
   res.json()
 })
 router.get('/couponitem/:email', async (req, res, next) => {
