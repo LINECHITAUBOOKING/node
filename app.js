@@ -68,6 +68,13 @@ app.use('/api/userlist', userlist)
 const coupon = require('./routes/coupon/coupon')
 app.use('/api/coupon', coupon)
 
+//! 俊傑的router
+const tripList = require('./routes/tripList/tripList')
+app.use('/api/tripList', tripList)
+
+const tripDetail = require('./routes/tripDetail/tripDetail')
+app.use('/api/tripDetail', tripDetail)
+
 // app.use('/register', authRouters)
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
