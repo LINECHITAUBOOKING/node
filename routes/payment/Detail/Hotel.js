@@ -8,7 +8,7 @@ const pool = require('../../../utils/db')
 router.use('/coupon/:couponId', async (req, res, next) => {
   console.log('123')
   let [useCoupon] = await pool.execute(
-    'SELECT user_coupon.id,user_coupon.discount FROM `user_coupon`  WHERE id=? ',
+    'SELECT user_coupon.id,user_coupon.discount FROM `user_coupon`  WHERE id=?',
     [req.params.couponId]
   )
 
@@ -18,10 +18,9 @@ router.use('/coupon/:couponId', async (req, res, next) => {
 router.post('/order', async (req, res, next) => {
   console.log('POST /api/order', req.body)
   // req.body.stockId, req.body.stockName
-  const memo = '無'
   const order_id = 'NH' + req.body.orderIdNum
   const description = JSON.stringify([
-    { booker: req.body.formData, memo: memo },
+    { booker: req.body.formData, memo: req.body.memo },
   ])
   console.log('======description======', description)
   let [resultsTotalOrderList] = await pool.query(
@@ -61,6 +60,19 @@ router.post('/order', async (req, res, next) => {
   // console.log(results);
   res.json({})
 })
+router.use('/user/:userEmail', async (req, res, next) => {
+  console.log('=====', req.params.userEmail)
+  const now = moment(Date.now()).format('YYYY-MM-DD')
+  // const now = '2023-03-21'
+
+  let [userCoupons] = await pool.execute(
+    'SELECT user_coupon.id,user_coupon.coupon_name,user_coupon.expire_date,user_coupon.discount FROM user_coupon  WHERE name= ? AND valid=?',
+    [req.params.userEmail, 1]
+  )
+  console.log('req.body.userEmail', now)
+
+  res.json(userCoupons)
+})
 router.use('/:companyName/:roomName', async (req, res, next) => {
   let [results] = await pool.execute(
     'SELECT  hotel_room_list.id AS hotel_room_list_id,hotel_room_list.*, room_service_list.*,room_service_list.id AS room_service_id,hotel_account.company_name,hotel_account.address FROM hotel_room_list INNER JOIN room_service_list ON hotel_room_list.room_name=room_service_list.room JOIN hotel_account ON hotel_account.company_name=hotel_room_list.hotel_name WHERE hotel_room_list.hotel_name=? AND room_service_list.hotel=? AND hotel_room_list.room_name=?',
@@ -76,17 +88,5 @@ router.use('/:companyName/:roomName', async (req, res, next) => {
   //   )
   res.json(results)
 })
-router.use('/:userEmail', async (req, res, next) => {
-  console.log('=====', req.params.userEmail)
-  const now = moment(Date.now()).format('YYYY-MM-DD')
-  // const now = '2023-03-21'
 
-  let [userCoupons] = await pool.execute(
-    'SELECT user_coupon.id,user_coupon.coupon_name,user_coupon.expire_date,user_coupon.discount FROM user_coupon  WHERE name= ?',
-    [req.params.userEmail]
-  )
-  console.log('req.body.userEmail', now)
-
-  res.json(userCoupons)
-})
 module.exports = router
