@@ -330,7 +330,7 @@ router.post('/setting', async (req, res) => {
       req.body.nickname,
       req.body.birthday,
       req.body.phone,
-      req.body.email, 
+      req.body.email,
     ]
   )
 
