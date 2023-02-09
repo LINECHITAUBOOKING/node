@@ -26,4 +26,16 @@ router.get('/list/:email/:id', async (req, res, next) => {
   res.json(results)
 })
 
+router.get('/pay/:email', async (req, res, next) => {
+  console.log('有嬤', req.params.email)
+  let [results] = await pool.execute(
+    'SELECT * FROM credit_card WHERE user_email = ?',
+    [req.params.email]
+  )
+  if (results.length === 0) {
+    return res.status(400).json({ error: '找不到訂單' })
+  }
+  res.json(results)
+})
+
 module.exports = router
