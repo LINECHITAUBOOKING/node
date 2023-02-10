@@ -25,6 +25,17 @@ router.get('/list/:email/:id', async (req, res, next) => {
   }
   res.json(results)
 })
+router.get('/listdetail/:email/:id', async (req, res, next) => {
+  console.log('有嬤', req.params.email, req.params.id)
+  let [results] = await pool.execute(
+    'SELECT order_list_detail.*,order_list_detail.amount AS detail_amount, total_order_list.*,hotel_room_list.* FROM order_list_detail INNER JOIN total_order_list ON order_list_detail.order_id = total_order_list.id JOIN hotel_room_list ON order_list_detail.product_id=hotel_room_list.id WHERE total_order_list.id = ? ',
+    [req.params.id]
+  )
+  if (results.length === 0) {
+    return res.status(400).json({ error: '找不到訂單' })
+  }
+  res.json(results)
+})
 
 router.get('/pay/:email', async (req, res, next) => {
   console.log('有嬤', req.params.email)
