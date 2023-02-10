@@ -44,7 +44,12 @@ const productsRouter = require('./routes/products')
 // const authRouters = require('./routes/authRouter')
 // use auth router(csrf, jwt, login, logout)
 app.use('/auth', authRouter)
-
+// NOTE payment start
+const paymentHotelDetail = require('./routes/payment/Detail/Hotel')
+const paymentHotelCheckOut = require('./routes/payment/CheckOut/Hotel')
+app.use('/api/payment/CheckOut/Hotel', paymentHotelCheckOut)
+app.use('/api/payment/Detail/Hotel', paymentHotelDetail)
+// NOTE payment end
 // demo data
 app.use('/products', productsRouter)
 
@@ -72,6 +77,8 @@ const userlist = require('./routes/user/list')
 app.use('/api/userlist', userlist)
 const coupon = require('./routes/coupon/coupon')
 app.use('/api/coupon', coupon)
+const tripList = require('./routes/tripList/tripList')
+app.use('/api/tripList', tripList)
 
 // app.use('/register', authRouters)
 // catch 404 and forward to error handler
