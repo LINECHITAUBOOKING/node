@@ -40,7 +40,12 @@ router.get('/jwt-token', (req, res) => {
     }
 
     const accessToken = jsonwebtoken.sign(
-      { email: user.email, username: user.username, role: user.role },
+      {
+        email: user.email,
+        username: user.username,
+        password: user.password,
+        role: user.role,
+      },
       accessTokenSecret,
       { expiresIn: '60m' }
     )
@@ -150,14 +155,24 @@ router.post('/login', async (req, res) => {
   if (result) {
     // generate an access token
     const accessToken = jsonwebtoken.sign(
-      { email: email, username: user.username, role: user.role },
+      {
+        email: email,
+        username: user.username,
+        role: user.role,
+        password: password,
+      },
       accessTokenSecret,
       { expiresIn: '60m' }
     )
 
     // generate an refreshToken token
     const refreshToken = jsonwebtoken.sign(
-      { email: email, username: user.username, role: user.role },
+      {
+        email: email,
+        username: user.username,
+        role: user.role,
+        password: password,
+      },
       refreshTokenSecret,
       { expiresIn: '60d' }
     )
@@ -291,7 +306,7 @@ router.post('/pay', async (req, res) => {
     )
   } else {
     let result = await pool.execute(
-      'INSERT INTO credit_card (user_email, cardholder_name, card_number, exp_date	, cvc) VALUES (?, ?, ?, ?, ?);',
+      'INSERT INTO user_credit_card (user_email, cardholder_name, card_number, exp_date	, cvc) VALUES (?, ?, ?, ?, ?);',
       [
         req.body.email,
         req.body.name,
@@ -318,18 +333,28 @@ router.get('/token/:token', async (req, res) => {
 
 router.post('/setting', async (req, res) => {
   // read username and password from request body
-  const { name, city, country, nickname, birthday, phone, email } = req.body
+  const {
+    name,
+    city,
+    country,
+    identification,
+    birthday,
+    phone,
+    gender,
+    email,
+  } = req.body
   console.log(req.body)
 
   let result = await pool.execute(
-    'UPDATE users SET name = ?, city = ?, country = ?, nickname = ?, birthday = ?, phone = ? WHERE email = ?;',
+    'UPDATE users SET name = ?, city = ?, country = ?, identification = ?, birthday = ?, phone = ?, gender = ? WHERE email = ?;',
     [
       req.body.name,
       req.body.city,
       req.body.country,
-      req.body.nickname,
+      req.body.identification,
       req.body.birthday,
       req.body.phone,
+      req.body.gender,
       req.body.email,
     ]
   )
