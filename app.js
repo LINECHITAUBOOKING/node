@@ -6,7 +6,6 @@ const logger = require('morgan')
 const csrf = require('csurf')
 const cors = require('cors')
 
-
 const app = express()
 
 // 不使用 res.render
@@ -79,7 +78,8 @@ const coupon = require('./routes/coupon/coupon')
 app.use('/api/coupon', coupon)
 const tripList = require('./routes/tripList/tripList')
 app.use('/api/tripList', tripList)
-
+const payRouter = require('./routes/pay')
+app.use('/api/pay', payRouter)
 // app.use('/register', authRouters)
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
