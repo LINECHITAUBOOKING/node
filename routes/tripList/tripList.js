@@ -69,10 +69,12 @@ router.get('/:URLkeyword', async (req, res) => {
     ReadyNameKeyword[0] === '%none'
   ) {
     let [results] = await pool.execute(allSql)
+    //除掉重複的plan
     let filteredResult = results.filter(
       (plan, index) =>
         index === results.findIndex((other) => plan.master === other.master)
     )
+    //改變物件內的屬性質
 
     res.json(filteredResult)
   }
@@ -95,6 +97,7 @@ router.get('/:URLkeyword', async (req, res) => {
       (plan, index) =>
         index === results.findIndex((other) => plan.master === other.master)
     )
+
     res.json(filteredResult)
   }
   //搜尋 地名 沒關鍵字
