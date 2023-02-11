@@ -433,8 +433,8 @@ router.post(
     console.log('req.files', req.files)
     const filenames = req.files
       ? req.files.map((file) => {
-          return path.join('uploads', file.filename)
-        })
+        return path.join('uploads', file.filename)
+      })
       : ''
     let filename = filenames.join(',')
     console.log('filename', filename, '1234')
