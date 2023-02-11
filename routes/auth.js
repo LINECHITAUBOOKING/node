@@ -369,6 +369,65 @@ router.post('/setNewUserLike', async (req, res, next) => {
   console.log(result)
   res.json(result)
 })
+const multer = require('multer')
+const path = require('path')
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, '..', 'public', 'uploads'))
+  },
+  filename: function (req, file, cb) {
+    const ext = file.originalname.split('.').pop()
+    cb(null, `${Date.now()}.${ext}`)
+  },
+})
+const uploader = multer({
+  storage: storage,
+  // 圖片格式的 validation
+  fileFilter: function (req, file, cb) {
+    if (
+      file.mimetype !== 'image/jpeg' &&
+      file.mimetype !== 'image/jpg' &&
+      file.mimetype !== 'image/png'
+    ) {
+      cb(new Error('上傳圖片格式不合法'), false)
+    } else {
+      cb(null, true)
+    }
+  },
+  // 限制檔案的大小
+  limits: {
+    // 1k = 1024 => 200k 200x1024
+    fileSize: 200 * 1024, // 204800
+  },
+})
+router.post(
+  '/postHotelComment',
+  uploader.array('photos'),
+  async (req, res, next) => {
+    console.log(req.body)
+    console.log('req.files', req.files)
+    const filenames = req.files
+      ? req.files.map((file) => {
+          return path.join('uploads', file.filename)
+        })
+      : ''
+    let filename = filenames.join(',')
+    console.log('filename', filename, '1234')
+    let result = await pool.execute(
+      'INSERT INTO hotel_comment (name, hotel, comment, comment_stars, comment_image, valid) VALUES (?, ?, ?, ?, ?, ?)',
+      [
+        req.body.user,
+        req.body.company_name,
+        req.body.comment_text,
+        req.body.rating,
+        filename,
+        1,
+      ]
+    )
+    console.log(result)
+    res.json(result)
+  }
+)
 router.get('/logout', authenticateJWT, (req, res) => {
   refreshTokens = refreshTokens.filter((t) => t !== req.cookies.accessToken)
 
