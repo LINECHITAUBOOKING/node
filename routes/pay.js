@@ -157,7 +157,7 @@ router.get('/reserve', async (req, res) => {
   // }
 
   const redirectUrls = {
-    confirmUrl: process.env.REACT_REDIRECT_CONFIRM_URL,
+    confirmUrl: 'http://localhost:3000/profile/pay-confirm',
     cancelUrl: process.env.REACT_REDIRECT_CANCEL_URL,
   }
 
