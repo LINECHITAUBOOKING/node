@@ -43,7 +43,12 @@ const productsRouter = require('./routes/products')
 // const authRouters = require('./routes/authRouter')
 // use auth router(csrf, jwt, login, logout)
 app.use('/auth', authRouter)
-
+// NOTE payment start
+const paymentHotelDetail = require('./routes/payment/Detail/Hotel')
+const paymentHotelCheckOut = require('./routes/payment/CheckOut/Hotel')
+app.use('/api/payment/CheckOut/Hotel', paymentHotelCheckOut)
+app.use('/api/payment/Detail/Hotel', paymentHotelDetail)
+// NOTE payment end
 // demo data
 app.use('/products', productsRouter)
 
@@ -59,6 +64,10 @@ const hotelDetail = require('./routes/hotelDetail/hotelDetail')
 app.use('/api/hotelDetail', hotelDetail)
 const roomDetail = require('./routes/hotelDetail/roomDetail')
 app.use('/api/hotelDetail', roomDetail)
+const hotelOrder = require('./routes/hotelDetail/hotelOrder')
+app.use('/api/hotelDetail', hotelOrder)
+const userLike = require('./routes/hotelDetail/userLike')
+app.use('/api/hotelDetail', userLike)
 
 const aroundSpots = require('./routes/aroundSpots')
 app.use('/api/aroundSpots', csrfProtection, aroundSpots)
@@ -67,7 +76,10 @@ const userlist = require('./routes/user/list')
 app.use('/api/userlist', userlist)
 const coupon = require('./routes/coupon/coupon')
 app.use('/api/coupon', coupon)
-
+const tripList = require('./routes/tripList/tripList')
+app.use('/api/tripList', tripList)
+const payRouter = require('./routes/pay')
+app.use('/api/pay', payRouter)
 // app.use('/register', authRouters)
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
