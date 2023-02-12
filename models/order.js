@@ -1,5 +1,5 @@
 // mysql2
-const promisePool = require('../utils/db').promisePool
+const promisePool = require('../config/mysql').promisePool
 const util = require('./util.js')
 
 // 專用處理sql字串的工具，主要format與escape
