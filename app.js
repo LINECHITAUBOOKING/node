@@ -43,7 +43,12 @@ const productsRouter = require('./routes/products')
 // const authRouters = require('./routes/authRouter')
 // use auth router(csrf, jwt, login, logout)
 app.use('/auth', authRouter)
-
+// NOTE payment start
+const paymentHotelDetail = require('./routes/payment/Detail/Hotel')
+const paymentHotelCheckOut = require('./routes/payment/CheckOut/Hotel')
+app.use('/api/payment/CheckOut/Hotel', paymentHotelCheckOut)
+app.use('/api/payment/Detail/Hotel', paymentHotelDetail)
+// NOTE payment end
 // demo data
 app.use('/products', productsRouter)
 
@@ -59,6 +64,12 @@ const hotelDetail = require('./routes/hotelDetail/hotelDetail')
 app.use('/api/hotelDetail', hotelDetail)
 const roomDetail = require('./routes/hotelDetail/roomDetail')
 app.use('/api/hotelDetail', roomDetail)
+const hotelComment = require('./routes/hotelDetail/hotelComment')
+app.use('/api/hotelDetail', hotelComment)
+const hotelOrder = require('./routes/hotelDetail/hotelOrder')
+app.use('/api/hotelDetail', hotelOrder)
+const userLike = require('./routes/hotelDetail/userLike')
+app.use('/api/hotelDetail', userLike)
 
 const aroundSpots = require('./routes/aroundSpots')
 app.use('/api/aroundSpots', csrfProtection, aroundSpots)
