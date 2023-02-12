@@ -49,6 +49,13 @@ const paymentHotelCheckOut = require('./routes/payment/CheckOut/Hotel')
 app.use('/api/payment/CheckOut/Hotel', paymentHotelCheckOut)
 app.use('/api/payment/Detail/Hotel', paymentHotelDetail)
 // NOTE payment end
+
+// NOTE TEST TRIP
+const tripTest = require('./routes/Triptest/tripTest')
+
+app.use('/api/trip/', tripTest)
+// NOTE TEST
+
 // demo data
 app.use('/products', productsRouter)
 
