@@ -48,6 +48,10 @@ const paymentHotelDetail = require('./routes/payment/Detail/Hotel')
 const paymentHotelCheckOut = require('./routes/payment/CheckOut/Hotel')
 app.use('/api/payment/CheckOut/Hotel', paymentHotelCheckOut)
 app.use('/api/payment/Detail/Hotel', paymentHotelDetail)
+const paymentTravelDetail = require('./routes/payment/Detail/Travel')
+// const paymentTravelCheckOut = require('./routes/payment/CheckOut/Travel')
+// app.use('/api/payment/CheckOut/Travel', paymentTravelCheckOut)
+app.use('/api/payment/Detail/Travel', paymentTravelDetail)
 // NOTE payment end
 
 // NOTE TEST TRIP
