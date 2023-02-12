@@ -72,8 +72,11 @@ app.use('/api/coupon', coupon)
 const tripList = require('./routes/tripList/tripList')
 app.use('/api/tripList', tripList)
 
-const tripProductDetails = require('./routes/tripProductDetails/tripProductDetails')
-app.use('/api/tripProductDetails', tripProductDetails)
+const tripDetails = require('./routes/tripProductDetails/tripDetails')
+app.use('/api/tripProductDetails', tripDetails)
+
+const planDetails = require('./routes/tripProductDetails/planDetails')
+app.use('/api/tripProductDetails', planDetails)
 
 // app.use('/register', authRouters)
 // catch 404 and forward to error handler
