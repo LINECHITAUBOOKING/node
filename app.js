@@ -48,7 +48,18 @@ const paymentHotelDetail = require('./routes/payment/Detail/Hotel')
 const paymentHotelCheckOut = require('./routes/payment/CheckOut/Hotel')
 app.use('/api/payment/CheckOut/Hotel', paymentHotelCheckOut)
 app.use('/api/payment/Detail/Hotel', paymentHotelDetail)
+const paymentTravelDetail = require('./routes/payment/Detail/Travel')
+const paymentTravelCheckOut = require('./routes/payment/CheckOut/Travel')
+app.use('/api/payment/CheckOut/Travel', paymentTravelCheckOut)
+app.use('/api/payment/Detail/Travel', paymentTravelDetail)
 // NOTE payment end
+
+// NOTE TEST TRIP
+const tripTest = require('./routes/Triptest/tripTest')
+
+app.use('/api/trip/', tripTest)
+// NOTE TEST
+
 // demo data
 app.use('/products', productsRouter)
 
@@ -80,6 +91,10 @@ const coupon = require('./routes/coupon/coupon')
 app.use('/api/coupon', coupon)
 const tripList = require('./routes/tripList/tripList')
 app.use('/api/tripList', tripList)
+const tripDetails = require('./routes/tripProductDetails/tripDetails')
+app.use('/api/tripProductDetails', tripDetails)
+const planDetails = require('./routes/tripProductDetails/planDetails')
+app.use('/api/tripProductDetails', planDetails)
 const payRouter = require('./routes/pay')
 app.use('/api/pay', payRouter)
 // app.use('/register', authRouters)
