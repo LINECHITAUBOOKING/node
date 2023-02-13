@@ -306,7 +306,7 @@ router.post('/pay', async (req, res) => {
     )
   } else {
     let result = await pool.execute(
-      'INSERT INTO user_credit_card (user_email, cardholder_name, card_number, exp_date	, cvc) VALUES (?, ?, ?, ?, ?);',
+      'INSERT INTO credit_card (user_email, cardholder_name, card_number, exp_date	, cvc) VALUES (?, ?, ?, ?, ?);',
       [
         req.body.email,
         req.body.name,
