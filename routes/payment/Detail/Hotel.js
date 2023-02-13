@@ -5,7 +5,7 @@ const moment = require('moment')
 
 const pool = require('../../../utils/db')
 
-router.use('/coupon/:couponId', async (req, res, next) => {
+router.get('/coupon/:couponId', async (req, res, next) => {
   console.log('123')
   let [useCoupon] = await pool.execute(
     'SELECT user_coupon.id,user_coupon.discount FROM `user_coupon`  WHERE id=?',
@@ -24,7 +24,7 @@ router.post('/order', async (req, res, next) => {
   ])
   console.log('======description======', description)
   let [resultsTotalOrderList] = await pool.query(
-    'INSERT INTO `total_order_list` (`id`, `user_email`, `order_date`, `total_price`, `total_amount`, `state`, `valid`) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    'INSERT INTO `total_order_list` (`id`, `user_email`, `order_date`, `total_price`, `total_amount`, `state`,`discount`,`hotel_img`, `valid`) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)',
     [
       order_id,
       req.body.userEmail,
@@ -32,6 +32,8 @@ router.post('/order', async (req, res, next) => {
       req.body.totalPrice,
       req.body.amount,
       0,
+      req.body.discount,
+      req.body.hotelImg,
       1,
     ]
   )
@@ -59,7 +61,7 @@ router.post('/order', async (req, res, next) => {
   // console.log(results);
   res.json({})
 })
-router.use('/userCoupons/:userEmail', async (req, res, next) => {
+router.get('/userCoupons/:userEmail', async (req, res, next) => {
   console.log('=====', req.params.userEmail)
   const now = moment(Date.now()).format('YYYY-MM-DD')
   // const now = '2023-03-21'
@@ -72,9 +74,9 @@ router.use('/userCoupons/:userEmail', async (req, res, next) => {
 
   res.json(userCoupons)
 })
-router.use('/:companyName/:roomName', async (req, res, next) => {
+router.get('/:companyName/:roomName', async (req, res, next) => {
   let [results] = await pool.execute(
-    'SELECT  hotel_room_list.id AS hotel_room_list_id,hotel_room_list.*, room_service_list.*,room_service_list.id AS room_service_id,hotel_account.company_name,hotel_account.address FROM hotel_room_list INNER JOIN room_service_list ON hotel_room_list.room_name=room_service_list.room JOIN hotel_account ON hotel_account.company_name=hotel_room_list.hotel_name WHERE hotel_room_list.hotel_name=? AND room_service_list.hotel=? AND hotel_room_list.room_name=?',
+    'SELECT  hotel_room_list.id AS hotel_room_list_id,hotel_room_list.*, room_service_list.*,room_service_list.id AS room_service_id,hotel_account.company_name,hotel_account.address,hotel_account.company_banner FROM hotel_room_list INNER JOIN room_service_list ON hotel_room_list.room_name=room_service_list.room JOIN hotel_account ON hotel_account.company_name=hotel_room_list.hotel_name WHERE hotel_room_list.hotel_name=? AND room_service_list.hotel=? AND hotel_room_list.room_name=?',
     [req.params.companyName, req.params.companyName, req.params.roomName]
   )
   // NOTE  JOIN了 訂單房型飯店 ，要想怎麼傳值到CheckOut
