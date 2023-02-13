@@ -25,6 +25,21 @@ router.get('/list/:email/:id', async (req, res, next) => {
   }
   res.json(results)
 })
+
+router.post('/order/:orderid/:lineid', async (req, res, next) => {
+  console.log('有嬤', req.params.orderid, req.params.lineid)
+  let [results] = await pool.execute(
+    'UPDATE total_order_list SET linepay_id = ? WHERE total_order_list.id = ?',
+    [req.params.lineid, req.params.orderid]
+  )
+  console.log('line', req.params.lineid)
+  if (results.length === 0) {
+    return res.status(400).json({ error: '找不到訂單' })
+  }
+  res.json(results)
+})
+
+
 router.get('/listdetail/:email/:id', async (req, res, next) => {
   console.log('有嬤', req.params.email, req.params.id)
   let [results] = await pool.execute(
