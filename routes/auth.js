@@ -331,6 +331,18 @@ router.get('/token/:token', async (req, res) => {
   res.json()
 })
 
+router.post(
+  '/order/:email/:lineid',
+  authenticateJWT,
+  async (req, res, next) => {
+    console.log('有嬤', req.params.lineid)
+    let [results] = await pool.execute(
+      'UPDATE total_order_list SET state = ? WHERE total_order_list.linepay_id = ?',
+      [req.body.state, req.params.lineid]
+    )
+    res.json()
+  }
+)
 router.post('/setting', async (req, res) => {
   // read username and password from request body
   const {
@@ -433,8 +445,8 @@ router.post(
     console.log('req.files', req.files)
     const filenames = req.files
       ? req.files.map((file) => {
-        return path.join('uploads', file.filename)
-      })
+          return path.join('uploads', file.filename)
+        })
       : ''
     let filename = filenames.join(',')
     console.log('filename', filename, '1234')
