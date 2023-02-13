@@ -3,16 +3,17 @@ const router = express.Router()
 const pool = require('../../utils/db')
 
 router.get('/:URLkeyword', async (req, res) => {
-  let keyword = req.params.URLkeyword //r=台北n=客家&風箏 //r=none?n=none
-  console.log(keyword)
+  let keyword = req.params.URLkeyword //r=台北+n=客家&風箏 //r=none&n=none
+  // console.log(keyword)
 
-  const keywordArr = keyword.split('=') //[r,台北?n,客家&風箏] //[r,none,none]
-  console.log(keywordArr)
+  const keywordArr = keyword.split('+') //[r=台北,n=客家&風箏] //[r=none,n=none]
+  // console.log(keywordArr)
 
-  const regionKeyword =
-    keywordArr[1].slice(0, 2) !== 'no' ? keywordArr[1].slice(0, 2) : ''
+  const regionKeyword = keywordArr[0] !== 'r=none' ? keywordArr[0].slice(2) : ''
+  // console.log('地名 keyword:', regionKeyword)
 
-  const rawNameKeyword = keywordArr[2].split('&') // [客家,風箏] //[none]
+  const rawNameKeyword = keywordArr[1].slice(2).split('&') // [客家,風箏] //[none]
+  // console.log('關鍵字keyword:', rawNameKeyword)
 
   let emptyNameKeywordArr = []
 
@@ -36,6 +37,8 @@ router.get('/:URLkeyword', async (req, res) => {
     return emptyParamArr
   }
 
+  // SELECT TRIP.trip_id,TRIP.trip_name,PLAN.price_adu,TRIP.introduction,TRIP.intro_pic,TRIP.pic_intro,TRIP.all_pic,TRIP.comment_grade,TRIP.comment_amount,LIST.culture_history,LIST.amusement,LIST.meal,LIST.no_shopping,LIST.self_trip,LIST.guide_trip,LIST.mountain,LIST.in_water,LIST.snow
+  // FROM `trip_event` AS TRIP JOIN `trip_service_list` AS LIST ON TRIP.trip_id = LIST.trip_id JOIN `trip_plan` AS PLAN ON TRIP.trip_id = PLAN.master WHERE region = "台北" AND (trip_name LIKE "%陽明山%")
   const preparedParamsArr = countParams()
   const preparedParams = preparedParamsArr.toString().replaceAll(',', ' ')
 
@@ -44,28 +47,69 @@ router.get('/:URLkeyword', async (req, res) => {
   console.log('regionKeyword', regionKeyword)
   console.log('ReadyNameKeyword', ReadyNameKeyword)
 
-  const normalSql = `SELECT * FROM trip_event  WHERE region = ? AND (trip_name LIKE ${preparedParams})`
-  const nameOnlySql = `SELECT * FROM trip_event WHERE trip_name LIKE ${preparedParams}`
-  const regionOnlySql = `SELECT * FROM trip_event WHERE region = ?`
+  // const normalSql = `SELECT * FROM trip_event  WHERE region = ? AND (trip_name LIKE ${preparedParams})`
+  // const nameOnlySql = `SELECT * FROM trip_event WHERE trip_name LIKE ${preparedParams}`
+  // const regionOnlySql = `SELECT * FROM trip_event WHERE region = ?`
+  const normalSql = `SELECT TRIP.trip_id,TRIP.trip_name,PLAN.master,PLAN.price_adu,TRIP.introduction,TRIP.intro_pic,TRIP.pic_intro,TRIP.all_pic,TRIp.comment_grade,TRIP.comment_amount,LIST.culture_history,LIST.amusement,LIST.meal,LIST.no_shopping,LIST.self_trip,LIST.guide_trip,LIST.mountain,LIST.in_water,LIST.snow 
+  FROM trip_event AS TRIP JOIN trip_service_list AS LIST ON TRIP.trip_id = LIST.trip_id JOIN trip_plan AS PLAN ON TRIP.trip_id = PLAN.master WHERE region = ? AND (TRIP.trip_name LIKE ${preparedParams})`
 
-  if (keyword === 'all') {
-    let [results] = await pool.execute('SELECT * FROM `trip_event`')
-    res.json(results)
-  } else if (regionKeyword && ReadyNameKeyword[0] !== '%none%') {
+  const nameOnlySql = `SELECT TRIP.trip_id,TRIP.trip_name,PLAN.master,PLAN.price_adu,TRIP.introduction,TRIP.intro_pic,TRIP.pic_intro,TRIP.all_pic,TRIp.comment_grade,TRIP.comment_amount,LIST.culture_history,LIST.amusement,LIST.meal,LIST.no_shopping,LIST.self_trip,LIST.guide_trip,LIST.mountain,LIST.in_water,LIST.snow 
+  FROM trip_event AS TRIP JOIN trip_service_list AS LIST ON TRIP.trip_id = LIST.trip_id JOIN trip_plan AS PLAN ON TRIP.trip_id = PLAN.master WHERE TRIP.trip_name LIKE ${preparedParams}`
+
+  const regionOnlySql = `SELECT TRIP.trip_id,TRIP.trip_name,PLAN.master,PLAN.price_adu,TRIP.introduction,TRIP.intro_pic,TRIP.pic_intro,TRIP.all_pic,TRIp.comment_grade,TRIP.comment_amount,LIST.culture_history,LIST.amusement,LIST.meal,LIST.no_shopping,LIST.self_trip,LIST.guide_trip,LIST.mountain,LIST.in_water,LIST.snow 
+  FROM trip_event AS TRIP JOIN trip_service_list AS LIST ON TRIP.trip_id = LIST.trip_id JOIN trip_plan AS PLAN ON TRIP.trip_id = PLAN.master WHERE region = ?`
+
+  const allSql = `SELECT TRIP.trip_id,TRIP.trip_name,PLAN.master,PLAN.price_adu,TRIP.introduction,TRIP.intro_pic,TRIP.pic_intro,TRIP.all_pic,TRIp.comment_grade,TRIP.comment_amount,LIST.culture_history,LIST.amusement,LIST.meal,LIST.no_shopping,LIST.self_trip,LIST.guide_trip,LIST.mountain,LIST.in_water,LIST.snow 
+  FROM trip_event AS TRIP JOIN trip_service_list AS LIST ON TRIP.trip_id = LIST.trip_id JOIN trip_plan AS PLAN ON TRIP.trip_id = PLAN.master `
+
+  //沒關鍵字 或 關鍵字為 all ->搜尋全部
+  if (
+    keyword === 'all' &&
+    regionKeyword === '' &&
+    ReadyNameKeyword[0] === '%none'
+  ) {
+    let [results] = await pool.execute(allSql)
+    //除掉重複的plan
+    let filteredResult = results.filter(
+      (plan, index) =>
+        index === results.findIndex((other) => plan.master === other.master)
+    )
+    //改變物件內的屬性質
+
+    res.json(filteredResult)
+  }
+  // 搜尋地名+關鍵字
+  else if (regionKeyword && ReadyNameKeyword[0] !== '%none%') {
     let [results] = await pool.execute(normalSql, [
       regionKeyword,
       ...ReadyNameKeyword,
     ])
-    res.json(results)
-  } else if (regionKeyword === '' && ReadyNameKeyword[0] !== '%none%') {
+    let filteredResult = results.filter(
+      (plan, index) =>
+        index === results.findIndex((other) => plan.master === other.master)
+    )
+    res.json(filteredResult)
+  }
+  //搜尋 關鍵字沒地名
+  else if (regionKeyword === '' && ReadyNameKeyword[0] !== '%none%') {
     let [results] = await pool.execute(nameOnlySql, [...ReadyNameKeyword])
-    console.log()
-    res.json(results)
-  } else if (regionKeyword !== '' && ReadyNameKeyword[0] === '%none%') {
+    let filteredResult = results.filter(
+      (plan, index) =>
+        index === results.findIndex((other) => plan.master === other.master)
+    )
+
+    res.json(filteredResult)
+  }
+  //搜尋 地名 沒關鍵字
+  else if (regionKeyword !== '' && ReadyNameKeyword[0] === '%none%') {
     let [results] = await pool.execute(regionOnlySql, [regionKeyword])
-    res.json(results)
+    let filteredResult = results.filter(
+      (plan, index) =>
+        index === results.findIndex((other) => plan.master === other.master)
+    )
+    res.json(filteredResult)
   } else {
-    res.json([{ 不同意的請舉手: '沒有' }])
+    res.json([{ 出現預料條件之外的錯誤: '哭阿' }])
   }
 })
 
