@@ -1,3 +1,4 @@
+const { default: axios } = require('axios')
 const express = require('express')
 const router = express.Router()
 
@@ -16,13 +17,42 @@ router.get('/coupon/:couponId', async (req, res, next) => {
 })
 
 router.post('/order', async (req, res, next) => {
-  console.log('POST /api/order', req.body)
+  // console.log('POST /api/order', req.body)
   // req.body.stockId, req.body.stockName
   const order_id = 'NH' + req.body.orderIdNum
   const description = JSON.stringify([
     { booker: req.body.formData, memo: req.body.memo },
   ])
-  console.log('======description======', description)
+  // console.log(
+  //   '======description======',
+  //   description
+  // )
+  const stringTest =
+  try {
+    const response = await axios.post(
+      `https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5`,
+      {
+        MerchantID: '3002607',
+        MerchantTradeNo: order_id,
+        MerchantTradeDate: moment(Date.now()).format('yyyy/MM/dd HH:mm:ss'),
+        PaymentType: 'aio_check_out_credit_onetime',
+        TotalAmount:
+          req.body.discount === 0
+            ? req.body.totalPrice
+            : req.body.totalPrice * req.body.discount,
+        TradeDesc: order_id,
+        ItemName: req.body.productId,
+        ReturnURL: 'https://localhost:3001//api/payment/Detail/Hotel/order',
+        ChoosePayment: 'Credit',
+        // CheckMacValue:
+        EncryptType: 1,
+      }
+    )
+    console.log(response)
+  } catch (error) {
+    console.log(error)
+  }
+
   let [resultsTotalOrderList] = await pool.query(
     'INSERT INTO `total_order_list` (`id`, `user_email`, `order_date`, `total_price`, `total_amount`, `state`,`discount`,`hotel_img`, `valid`) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)',
     [
