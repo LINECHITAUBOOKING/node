@@ -330,6 +330,16 @@ router.get('/token/:token', async (req, res) => {
 
   res.json()
 })
+router.get('/user/:email', async (req, res) => {
+  // read username and password from request body
+  const email = req.params.email
+
+  let result = await pool.execute('SELECT * FROM users WHERE email = ?', [
+    email,
+  ])
+
+  res.json(result)
+})
 
 router.get('/order/:lineid', authenticateJWT, async (req, res, next) => {
   console.log('有嬤', req.params.lineid)
@@ -339,6 +349,7 @@ router.get('/order/:lineid', authenticateJWT, async (req, res, next) => {
   )
   res.json()
 })
+
 router.post('/setting', async (req, res) => {
   // read username and password from request body
   const {
